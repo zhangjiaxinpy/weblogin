@@ -2,7 +2,6 @@
 from django.db import models
 from tinymce.models import HTMLField
 
-
 # Create your models here.
 
 
@@ -13,12 +12,12 @@ class UserInfo(models.Model):
     uName = models.CharField("用户名", max_length=20)
     uPwd = models.CharField("密码", max_length=100)
     uEmail = models.EmailField("电子邮件")
-    uPhone = models.DecimalField("手机号", max_digits=11, decimal_places=0)
-    uAddr = models.CharField("收货地址", max_length=200)
+    uPhone = models.DecimalField("手机号", max_digits=11, decimal_places=0, null=True)
+    uAddr = models.CharField("收货地址", max_length=200, null=True)
     uTime = models.DateTimeField(auto_now_add=True)
 
 
-class CharList(models.Model):
+class CartList(models.Model):
     """
     购物车表
     """
@@ -38,7 +37,7 @@ class OrderList(models.Model):
     oIspay = models.BooleanField("是否支付")
 
 
-class Detailorder(models.Model):
+class DetailOrder(models.Model):
     """
     订单从表
     """
@@ -57,8 +56,10 @@ class ProductInfo(models.Model):
     pStock = models.IntegerField("库存")
     pDesc = models.CharField("商品介绍", max_length=1000)
     pDetail = HTMLField("商品详情")
-    pTime_data = models.DateTimeField("商品添加时间", auto_now_add=True)
+    pTime = models.DateTimeField("商品添加时间", auto_now_add=True)
+    pImg = models.ImageField(upload_to='upload/')
     pClass = models.ForeignKey('Sort')
+    pUnit = models.CharField("单位", max_length=20)
 
 
 class Sort(models.Model):
@@ -66,3 +67,15 @@ class Sort(models.Model):
     分类表
     """
     sClass = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.sClass.encode("utf-8")
+
+
+class RencentMap(models.Model):
+    """
+    浏览记录表
+    """
+    rUser = models.ForeignKey('UserInfo')
+    rProName = models.ForeignKey('ProductInfo')
+    rTime = models.DateTimeField(auto_now_add=True)
